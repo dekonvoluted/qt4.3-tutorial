@@ -11,7 +11,7 @@ find_package( Qt4 REQUIRED )
 include( ${QT_USE_FILE} )
 
 # Create executable
-add_executable( qt4.3-tutorial main.cpp )
+add_executable( qt4.3-tutorial main.cpp mywidget.cpp)
 
 # Link libraries
 target_link_libraries( qt4.3-tutorial ${QT_LIBRARIES} )
