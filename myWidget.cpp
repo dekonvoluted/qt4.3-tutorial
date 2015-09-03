@@ -15,10 +15,17 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
 
     QGridLayout* grid = new QGridLayout;
+    LCDRange* previousRange = 0;
+
     for ( int row = 0; row < 3; ++row ) {
         for ( int col = 0; col < 3; ++col ) {
             LCDRange* lcdRange = new LCDRange( this );
             grid->addWidget( lcdRange, row, col );
+
+            if ( previousRange ) {
+                connect( lcdRange, SIGNAL( valueChanged( int ) ), previousRange, SLOT( setValue( int ) ) );
+            }
+            previousRange = lcdRange;
         }
     }
 

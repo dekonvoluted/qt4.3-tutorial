@@ -10,8 +10,11 @@ find_package( Qt4 REQUIRED )
 # Qt setup
 include( ${QT_USE_FILE} )
 
+# Handle Qt macros
+qt4_wrap_cpp( headers_moc lcdRange.h )
+
 # Create executable
-add_executable( qt4.3-tutorial main.cpp myWidget.cpp lcdRange.cpp )
+add_executable( qt4.3-tutorial main.cpp myWidget.cpp lcdRange.cpp ${headers_moc} )
 
 # Link libraries
 target_link_libraries( qt4.3-tutorial ${QT_LIBRARIES} )
