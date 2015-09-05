@@ -9,7 +9,7 @@
 
 MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
 {
-    QPushButton* quit = new QPushButton( "Quit", this );
+    QPushButton* quit = new QPushButton( "&Quit", this );
     quit->setFont( QFont( "Times", 18, QFont::Bold ) );
 
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
