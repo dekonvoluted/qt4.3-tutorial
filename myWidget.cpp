@@ -2,8 +2,8 @@
 #include <QFont>
 #include <QGridLayout>
 #include <QPushButton>
-#include <QVBoxLayout>
 
+#include "cannonField.h"
 #include "lcdRange.h"
 #include "myWidget.h"
 
@@ -14,24 +14,22 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
 
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
 
-    QGridLayout* grid = new QGridLayout;
-    LCDRange* previousRange = 0;
+    LCDRange* angle = new LCDRange;
+    angle->setRange( 5, 70 );
 
-    for ( int row = 0; row < 3; ++row ) {
-        for ( int col = 0; col < 3; ++col ) {
-            LCDRange* lcdRange = new LCDRange( this );
-            grid->addWidget( lcdRange, row, col );
+    CannonField* cannonField = new CannonField;
 
-            if ( previousRange ) {
-                connect( lcdRange, SIGNAL( valueChanged( int ) ), previousRange, SLOT( setValue( int ) ) );
-            }
-            previousRange = lcdRange;
-        }
-    }
+    connect( angle, SIGNAL( valueChanged( int ) ), cannonField, SLOT( setAngle( int ) ) );
+    connect( cannonField, SIGNAL( angleChanged( int ) ), angle, SLOT( setValue( int ) ) );
 
-    QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->addWidget( quit );
-    layout->addLayout( grid );
+    QGridLayout* layout = new QGridLayout( this );
+    layout->addWidget( quit, 0, 0 );
+    layout->addWidget( angle, 1, 0 );
+    layout->addWidget( cannonField, 1, 1, 2, 1 );
+    layout->setColumnStretch( 1, 10 );
     this->setLayout( layout );
+
+    angle->setValue( 60 );
+    angle->setFocus();
 }
 

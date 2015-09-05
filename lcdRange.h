@@ -14,6 +14,7 @@ class LCDRange : public QWidget
 
     public slots:
     void setValue( int );
+    void setRange( int, int );
 
     signals:
     void valueChanged( int );
