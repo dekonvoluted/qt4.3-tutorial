@@ -24,6 +24,6 @@ void CannonField::setAngle( int angle )
 void CannonField::paintEvent( QPaintEvent* event )
 {
     QPainter painter( this );
-    painter.drawText( 200, 200, tr( "Angle = " ) + QString::number( currentAngle ) );
+    painter.drawText( this->rect(), Qt::AlignCenter, tr( "Angle = " ) + QString::number( currentAngle ) );
 }
 
