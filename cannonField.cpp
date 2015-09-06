@@ -24,6 +24,13 @@ void CannonField::setAngle( int angle )
 void CannonField::paintEvent( QPaintEvent* event )
 {
     QPainter painter( this );
-    painter.drawText( 200, 200, tr( "Angle = " ) + QString::number( currentAngle ) );
+    painter.setPen( Qt::NoPen );
+    painter.setBrush( Qt::blue );
+
+    painter.translate( 0, this->height() );
+    painter.drawPie( QRect( -35, -35, 70, 70 ), 0, 90 * 16 );
+
+    painter.rotate( -currentAngle );
+    painter.drawRect( QRect( 30, -5, 20, 10) );
 }
 
