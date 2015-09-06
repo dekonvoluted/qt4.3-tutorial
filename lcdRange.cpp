@@ -1,11 +1,16 @@
 #include <QLCDNumber>
+#include <QLabel>
 #include <QSlider>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "lcdRange.h"
 
-LCDRange::LCDRange( QWidget* parent ) : QWidget( parent )
+LCDRange::LCDRange( const QString& text, QWidget* parent ) : QWidget( parent )
 {
+    label = new QLabel( text );
+    label->setAlignment( Qt::AlignCenter | Qt::AlignTop );
+
     QLCDNumber* lcd = new QLCDNumber( 2, this );
     lcd->setSegmentStyle( QLCDNumber::Filled );
 
@@ -19,6 +24,7 @@ LCDRange::LCDRange( QWidget* parent ) : QWidget( parent )
     QVBoxLayout* layout = new QVBoxLayout( this );
     layout->addWidget( lcd );
     layout->addWidget( slider );
+    layout->addWidget( label );
     this->setLayout( layout );
 
     this->setFocusProxy( slider );

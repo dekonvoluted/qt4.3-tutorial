@@ -16,11 +16,14 @@ class CannonField : public QWidget
     void setAngle( int );
     void setForce( int );
     void shoot();
+    void newTarget();
 
     private slots:
     void moveShot();
 
     signals:
+    void hit();
+    void missed();
     void angleChanged( int );
     void forceChanged( int );
 
@@ -29,9 +32,11 @@ class CannonField : public QWidget
 
     private:
     void paintShot( QPainter& );
+    void paintTarget( QPainter& );
     void paintCannon( QPainter& );
     QRect cannonRect() const;
     QRect shotRect() const;
+    QRect targetRect() const;
 
     int currentAngle;
     int currentForce;
@@ -40,6 +45,8 @@ class CannonField : public QWidget
     QTimer* autoShootTimer;
     float shotAngle;
     float shotForce;
+
+    QPoint target;
 };
 
 #endif

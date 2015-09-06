@@ -1,6 +1,9 @@
+#include <QDateTime>
 #include <QPainter>
 #include <QTimer>
+
 #include <cmath>
+#include <cstdlib>
 
 #include "cannonField.h"
 
@@ -19,6 +22,8 @@ CannonField::CannonField( QWidget* parent ) : QWidget( parent )
 
     this->setPalette( QPalette( QColor( 250, 250, 200 ) ) );
     this->setAutoFillBackground( true );
+
+    newTarget();
 }
 
 void CannonField::setAngle( int angle )
@@ -54,14 +59,32 @@ void CannonField::shoot()
     autoShootTimer->start( 5 );
 }
 
+void CannonField::newTarget()
+{
+    static bool firstTime = true;
+
+    if ( firstTime ) {
+        firstTime = false;
+        QTime midnight( 0, 0, 0 );
+        qsrand( midnight.secsTo( QTime::currentTime() ) );
+    }
+
+    target = QPoint( 200 + qrand() % 190, 10 + qrand() % 255 );
+    update();
+}
+
 void CannonField::moveShot()
 {
     QRegion oldRegion = shotRect();
     timerCount++;
     QRect newRegion = shotRect();
 
-    if ( newRegion.x() > this->width() or newRegion.y() > this->height() ) {
+    if ( newRegion.intersects( targetRect() ) ) {
         autoShootTimer->stop();
+        emit hit();
+    } else if ( newRegion.x() > this->width() or newRegion.y() > this->height() ) {
+        autoShootTimer->stop();
+        emit missed();
     } else {
         oldRegion = oldRegion.unite( newRegion );
     }
@@ -75,6 +98,7 @@ void CannonField::paintEvent( QPaintEvent* event )
 
     paintCannon( painter );
     if ( autoShootTimer->isActive() ) paintShot( painter );
+    paintTarget( painter );
 }
 
 const QRect barrelRect( 30, -5, 20, 10 );
@@ -98,6 +122,13 @@ void CannonField::paintShot( QPainter& painter )
     painter.setPen( Qt::NoPen );
     painter.setBrush( Qt::black );
     painter.drawRect( shotRect() );
+}
+
+void CannonField::paintTarget( QPainter& painter )
+{
+    painter.setPen( Qt::black );
+    painter.setBrush( Qt::red );
+    painter.drawRect( targetRect() );
 }
 
 QRect CannonField::cannonRect() const
@@ -126,6 +157,13 @@ QRect CannonField::shotRect() const
 
     QRect result( 0, 0, 6, 6 );
     result.moveCenter( QPoint( qRound( x ), height() - 1 - qRound( y ) ) );
+    return result;
+}
+
+QRect CannonField::targetRect() const
+{
+    QRect result( 0, 0, 20, 10 );
+    result.moveCenter( QPoint( target.x(), height() - 1 - target.y() ) );
     return result;
 }
 

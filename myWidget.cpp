@@ -15,10 +15,10 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
 
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
 
-    LCDRange* angle = new LCDRange;
+    LCDRange* angle = new LCDRange( "Angle" );
     angle->setRange( 5, 70 );
 
-    LCDRange* force = new LCDRange;
+    LCDRange* force = new LCDRange( "Force" );
     force->setRange( 10, 50 );
 
     CannonField* cannonField = new CannonField;

@@ -3,14 +3,16 @@
 
 #include <QWidget>
 
+class QLabel;
 class QSlider;
+class QString;
 
 class LCDRange : public QWidget
 {
     Q_OBJECT
 
     public:
-    LCDRange( QWidget* = 0 );
+    LCDRange( const QString&, QWidget* = 0 );
 
     public slots:
     void setValue( int );
@@ -20,6 +22,7 @@ class LCDRange : public QWidget
     void valueChanged( int );
 
     private:
+    QLabel* label;
     QSlider* slider;
 };
 
