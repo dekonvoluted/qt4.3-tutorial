@@ -29,12 +29,23 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
     connect( force, SIGNAL( valueChanged( int ) ), cannonField, SLOT( setForce( int ) ) );
     connect( cannonField, SIGNAL( forceChanged( int ) ), force, SLOT( setValue( int ) ) );
 
+    QPushButton* shoot = new QPushButton( "Shoot", this );
+    shoot->setFont( QFont( "Times", 18, QFont::Bold ) );
+
+    connect( shoot, SIGNAL( clicked() ), cannonField, SLOT( shoot() ) );
+
+    QHBoxLayout* topLayout = new QHBoxLayout;
+    topLayout->addWidget( shoot );
+    topLayout->addStretch( 1 );
+
+
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget( angle );
     leftLayout->addWidget( force );
 
     QGridLayout* layout = new QGridLayout( this );
     layout->addWidget( quit, 0, 0 );
+    layout->addLayout( topLayout, 0, 1 );
     layout->addLayout( leftLayout, 1, 0 );
     layout->addWidget( cannonField, 1, 1, 2, 1 );
     layout->setColumnStretch( 1, 10 );

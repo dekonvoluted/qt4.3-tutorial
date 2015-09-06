@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class QTimer;
+
 class CannonField : public QWidget
 {
     Q_OBJECT
@@ -13,6 +15,10 @@ class CannonField : public QWidget
     public slots:
     void setAngle( int );
     void setForce( int );
+    void shoot();
+
+    private slots:
+    void moveShot();
 
     signals:
     void angleChanged( int );
@@ -22,10 +28,18 @@ class CannonField : public QWidget
     void paintEvent( QPaintEvent* );
 
     private:
+    void paintShot( QPainter& );
+    void paintCannon( QPainter& );
     QRect cannonRect() const;
+    QRect shotRect() const;
 
     int currentAngle;
     int currentForce;
+
+    int timerCount;
+    QTimer* autoShootTimer;
+    float shotAngle;
+    float shotForce;
 };
 
 #endif
