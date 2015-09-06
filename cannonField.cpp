@@ -29,6 +29,7 @@ void CannonField::setForce( int force )
     if ( force < 0 ) force = 0;
 
     currentForce = force;
+    this->update( cannonRect() );
     emit forceChanged( currentForce );
 }
 
@@ -42,7 +43,8 @@ void CannonField::paintEvent( QPaintEvent* event )
     painter.drawPie( QRect( -35, -35, 70, 70 ), 0, 90 * 16 );
 
     painter.rotate( -currentAngle );
-    painter.drawRect( QRect( 30, -5, 20, 10) );
+    int cannonWidth = 10 * ( currentForce - 0 ) / 50;
+    painter.drawRect( QRect( 30, -0.5 * cannonWidth, 20, cannonWidth ) );
 }
 
 QRect CannonField::cannonRect() const
