@@ -29,14 +29,11 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
     connect( force, SIGNAL( valueChanged( int ) ), cannonField, SLOT( setForce( int ) ) );
     connect( cannonField, SIGNAL( forceChanged( int ) ), force, SLOT( setValue( int ) ) );
 
-    QVBoxLayout* leftLayout = new QVBoxLayout;
-    leftLayout->addWidget( angle );
-    leftLayout->addWidget( force );
-
     QGridLayout* layout = new QGridLayout( this );
     layout->addWidget( quit, 0, 0 );
-    layout->addLayout( leftLayout, 1, 0 );
-    layout->addWidget( cannonField, 1, 1, 2, 1 );
+    layout->addWidget( angle, 1, 0 );
+    layout->addWidget( force, 2, 0 );
+    layout->addWidget( cannonField, 0, 1, 3, 1 );
     layout->setColumnStretch( 1, 10 );
     this->setLayout( layout );
 
