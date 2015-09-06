@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QFont>
 #include <QGridLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -15,10 +16,10 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
 
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
 
-    LCDRange* angle = new LCDRange;
+    LCDRange* angle = new LCDRange( QLabel( "Angle" ) );
     angle->setRange( 5, 70 );
 
-    LCDRange* force = new LCDRange;
+    LCDRange* force = new LCDRange( QLabel( "Force" ) );
     force->setRange( 10, 50 );
 
     CannonField* cannonField = new CannonField;
@@ -29,10 +30,13 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
     connect( force, SIGNAL( valueChanged( int ) ), cannonField, SLOT( setForce( int ) ) );
     connect( cannonField, SIGNAL( forceChanged( int ) ), force, SLOT( setValue( int ) ) );
 
+    QVBoxLayout* controls = new QVBoxLayout;
+    controls->addWidget( angle );
+    controls->addWidget( force );
+
     QGridLayout* layout = new QGridLayout( this );
     layout->addWidget( quit, 0, 0 );
-    layout->addWidget( angle, 1, 0 );
-    layout->addWidget( force, 2, 0 );
+    layout->addLayout( controls, 1, 0 );
     layout->addWidget( cannonField, 0, 1, 3, 1 );
     layout->setColumnStretch( 1, 10 );
     this->setLayout( layout );

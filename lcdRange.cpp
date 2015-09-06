@@ -1,24 +1,29 @@
-#include <QLCDNumber>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSlider>
-#include <QVBoxLayout>
+#include <QSpinBox>
 
 #include "lcdRange.h"
 
-LCDRange::LCDRange( QWidget* parent ) : QWidget( parent )
+LCDRange::LCDRange( const QLabel& title, QWidget* parent ) : QWidget( parent )
 {
-    QLCDNumber* lcd = new QLCDNumber( 2, this );
-    lcd->setSegmentStyle( QLCDNumber::Filled );
+    label = new QLabel( title.text() + ": " );
+
+    QSpinBox* lcd = new QSpinBox( this );
+    lcd->setRange( 0, 99 );
 
     slider = new QSlider( Qt::Horizontal, this );
     slider->setRange( 0, 99 );
     slider->setValue( 0 );
 
-    connect( slider, SIGNAL( valueChanged( int ) ), lcd, SLOT( display( int ) ) );
+    connect( slider, SIGNAL( valueChanged( int ) ), lcd, SLOT( setValue( int ) ) );
+    connect( lcd, SIGNAL( valueChanged( int ) ), slider, SLOT( setValue( int ) ) );
     connect( slider, SIGNAL( valueChanged( int ) ), this, SIGNAL( valueChanged( int ) ) );
 
-    QVBoxLayout* layout = new QVBoxLayout( this );
-    layout->addWidget( lcd );
-    layout->addWidget( slider );
+    QGridLayout* layout = new QGridLayout( this );
+    layout->addWidget( label, 0, 0 );
+    layout->addWidget( lcd, 0, 1 );
+    layout->addWidget( slider, 1, 0, 1, 2 );
     this->setLayout( layout );
 
     this->setFocusProxy( slider );
