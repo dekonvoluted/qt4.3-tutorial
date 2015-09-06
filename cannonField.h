@@ -12,15 +12,20 @@ class CannonField : public QWidget
 
     public slots:
     void setAngle( int );
+    void setForce( int );
 
     signals:
     void angleChanged( int );
+    void forceChanged( int );
 
     protected:
     void paintEvent( QPaintEvent* );
 
     private:
+    QRect cannonRect() const;
+
     int currentAngle;
+    int currentForce;
 };
 
 #endif

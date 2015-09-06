@@ -5,6 +5,7 @@
 CannonField::CannonField( QWidget* parent ) : QWidget( parent )
 {
     currentAngle = 45;
+    currentForce = 0;
     this->setPalette( QPalette( QColor( 250, 250, 200 ) ) );
     this->setAutoFillBackground( true );
 }
@@ -17,8 +18,18 @@ void CannonField::setAngle( int angle )
     if ( angle > 70 ) angle = 70;
 
     currentAngle = angle;
-    this->update();
+    this->update( cannonRect() );
     emit angleChanged( currentAngle );
+}
+
+void CannonField::setForce( int force )
+{
+    if ( currentForce == force ) return;
+
+    if ( force < 0 ) force = 0;
+
+    currentForce = force;
+    emit forceChanged( currentForce );
 }
 
 void CannonField::paintEvent( QPaintEvent* event )
@@ -32,5 +43,12 @@ void CannonField::paintEvent( QPaintEvent* event )
 
     painter.rotate( -currentAngle );
     painter.drawRect( QRect( 30, -5, 20, 10) );
+}
+
+QRect CannonField::cannonRect() const
+{
+    QRect result( 0, 0, 50, 50 );
+    result.moveBottomLeft( this->rect().bottomLeft() );
+    return result;
 }
 
