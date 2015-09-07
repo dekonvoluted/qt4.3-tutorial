@@ -24,6 +24,8 @@ CannonField::CannonField( QWidget* parent ) : QWidget( parent )
     this->setAutoFillBackground( true );
 
     newTarget();
+
+    connect( this, SIGNAL( hit() ), this, SLOT( newTarget() ) );
 }
 
 void CannonField::setAngle( int angle )
