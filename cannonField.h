@@ -14,6 +14,7 @@ class CannonField : public QWidget
 
     bool gameOver() const;
     bool isShooting() const;
+    QSize sizeHint() const;
 
     public slots:
     void setAngle( int );
@@ -35,14 +36,21 @@ class CannonField : public QWidget
 
     protected:
     void paintEvent( QPaintEvent* );
+    void mousePressEvent( QMouseEvent* );
+    void mouseMoveEvent( QMouseEvent* );
+    void mouseReleaseEvent( QMouseEvent* );
 
     private:
+    void paintCannon( QPainter& );
     void paintShot( QPainter& );
     void paintTarget( QPainter& );
-    void paintCannon( QPainter& );
+    void paintBarrier( QPainter& );
     QRect cannonRect() const;
     QRect shotRect() const;
     QRect targetRect() const;
+    QRect barrierRect() const;
+
+    bool barrelHit( const QPoint& ) const;
 
     int currentAngle;
     int currentForce;
@@ -55,6 +63,7 @@ class CannonField : public QWidget
     QPoint target;
 
     bool gameEnded;
+    bool barrelPressed;
 };
 
 #endif

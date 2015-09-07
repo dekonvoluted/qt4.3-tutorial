@@ -1,5 +1,7 @@
 #include <QDateTime>
+#include <QMouseEvent>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QTimer>
 
 #include <cmath>
@@ -26,6 +28,8 @@ CannonField::CannonField( QWidget* parent ) : QWidget( parent )
     target = QPoint( 0, 0 );
     gameEnded = false;
 
+    barrelPressed = false;
+
     newTarget();
 }
 
@@ -37,6 +41,11 @@ bool CannonField::gameOver() const
 bool CannonField::isShooting() const
 {
     return autoShootTimer->isActive();
+}
+
+QSize CannonField::sizeHint() const
+{
+    return QSize( 400, 300 );
 }
 
 void CannonField::setAngle( int angle )
@@ -115,7 +124,7 @@ void CannonField::moveShot()
         autoShootTimer->stop();
         emit hit();
         emit canShoot( true );
-    } else if ( newRegion.x() > this->width() or newRegion.y() > this->height() ) {
+    } else if ( newRegion.x() > this->width() or newRegion.y() > this->height() or newRegion.intersects( barrierRect() ) ) {
         autoShootTimer->stop();
         emit missed();
         emit canShoot( true );
@@ -137,8 +146,33 @@ void CannonField::paintEvent( QPaintEvent* event )
     }
 
     paintCannon( painter );
+    paintBarrier( painter );
     if ( isShooting() ) paintShot( painter );
     if ( not gameEnded ) paintTarget( painter );
+}
+
+void CannonField::mousePressEvent( QMouseEvent* event )
+{
+    if ( event->button() != Qt::LeftButton ) return;
+
+    if ( barrelHit( event->pos() ) ) barrelPressed = true;
+}
+
+void CannonField::mouseMoveEvent( QMouseEvent* event )
+{
+    if ( not barrelPressed ) return;
+
+    QPoint pos = event->pos();
+    if ( pos.x() <= 0 ) pos.setX( 1 );
+    if ( pos.y() >= this->height() ) pos.setY( this->height() - 1 );
+
+    double rad = atan( ( ( double ) this->rect().bottom() - pos.y() ) / pos.x() );
+    setAngle( qRound( rad * 180 / M_PI ) );
+}
+
+void CannonField::mouseReleaseEvent( QMouseEvent* event )
+{
+    if ( event->button() == Qt::LeftButton ) barrelPressed = false;
 }
 
 const QRect barrelRect( 30, -5, 20, 10 );
@@ -169,6 +203,13 @@ void CannonField::paintTarget( QPainter& painter )
     painter.setPen( Qt::black );
     painter.setBrush( Qt::red );
     painter.drawRect( targetRect() );
+}
+
+void CannonField::paintBarrier( QPainter& painter )
+{
+    painter.setPen( Qt::black );
+    painter.setBrush( Qt::yellow );
+    painter.drawRect( barrierRect() );
 }
 
 QRect CannonField::cannonRect() const
@@ -205,5 +246,19 @@ QRect CannonField::targetRect() const
     QRect result( 0, 0, 20, 10 );
     result.moveCenter( QPoint( target.x(), height() - 1 - target.y() ) );
     return result;
+}
+
+QRect CannonField::barrierRect() const
+{
+    return QRect( 145, height() - 100, 15, 99 );
+}
+
+bool CannonField::barrelHit( const QPoint& point ) const
+{
+    QMatrix matrix;
+    matrix.translate( 0, height() );
+    matrix.rotate( -currentAngle );
+    matrix = matrix.inverted();
+    return barrelRect.contains( matrix.map( point ) );
 }
 

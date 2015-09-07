@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLCDNumber>
 #include <QPushButton>
+#include <QShortcut>
 #include <QVBoxLayout>
 
 #include "cannonField.h"
@@ -13,7 +14,7 @@
 
 GameBoard::GameBoard( QWidget* parent ) : QWidget( parent )
 {
-    QPushButton* quit = new QPushButton( "Quit", this );
+    QPushButton* quit = new QPushButton( "&Quit", this );
     quit->setFont( QFont( "Times", 18, QFont::Bold ) );
 
     connect( quit, SIGNAL( clicked() ), qApp, SLOT( quit() ) );
@@ -23,6 +24,9 @@ GameBoard::GameBoard( QWidget* parent ) : QWidget( parent )
 
     LCDRange* force = new LCDRange( "Force" );
     force->setRange( 10, 50 );
+
+    QFrame* cannonBox = new QFrame;
+    cannonBox->setFrameStyle( QFrame::WinPanel | QFrame::Sunken );
 
     cannonField = new CannonField;
 
@@ -35,13 +39,13 @@ GameBoard::GameBoard( QWidget* parent ) : QWidget( parent )
     connect( cannonField, SIGNAL( hit() ), this, SLOT( hit() ) );
     connect( cannonField, SIGNAL( missed() ), this, SLOT( missed() ) );
 
-    QPushButton* shoot = new QPushButton( "Shoot", this );
+    QPushButton* shoot = new QPushButton( "&Shoot", this );
     shoot->setFont( QFont( "Times", 18, QFont::Bold ) );
 
     connect( shoot, SIGNAL( clicked() ), this, SLOT( fire() ) );
     connect( cannonField, SIGNAL( canShoot( bool ) ), shoot, SLOT( setEnabled( bool ) ) );
 
-    QPushButton* restart = new QPushButton( "New Game" );
+    QPushButton* restart = new QPushButton( "&New Game" );
     restart->setFont( QFont( "Times", 18, QFont::Bold ) );
 
     connect( restart, SIGNAL( clicked() ), this, SLOT( newGame() ) );
@@ -55,6 +59,10 @@ GameBoard::GameBoard( QWidget* parent ) : QWidget( parent )
     QLabel* hitsLabel = new QLabel( "Hits" );
     QLabel* shotsLeftLabel = new QLabel( "Shots Left" );
 
+    new QShortcut( Qt::Key_Enter, this, SLOT( fire() ) );
+    new QShortcut( Qt::Key_Return, this, SLOT( fire() ) );
+    new QShortcut( Qt::CTRL + Qt::Key_Q, this, SLOT( close() ) );
+
     QHBoxLayout* topLayout = new QHBoxLayout;
     topLayout->addWidget( shoot );
     topLayout->addWidget( hits );
@@ -64,16 +72,19 @@ GameBoard::GameBoard( QWidget* parent ) : QWidget( parent )
     topLayout->addStretch( 1 );
     topLayout->addWidget( restart );
 
-
     QVBoxLayout* leftLayout = new QVBoxLayout;
     leftLayout->addWidget( angle );
     leftLayout->addWidget( force );
+
+    QVBoxLayout* cannonLayout = new QVBoxLayout;
+    cannonLayout->addWidget( cannonField );
+    cannonBox->setLayout( cannonLayout );
 
     QGridLayout* layout = new QGridLayout( this );
     layout->addWidget( quit, 0, 0 );
     layout->addLayout( topLayout, 0, 1 );
     layout->addLayout( leftLayout, 1, 0 );
-    layout->addWidget( cannonField, 1, 1, 2, 1 );
+    layout->addWidget( cannonBox, 1, 1, 2, 1 );
     layout->setColumnStretch( 1, 10 );
     this->setLayout( layout );
 
