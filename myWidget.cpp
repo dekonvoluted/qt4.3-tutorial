@@ -34,6 +34,8 @@ MyWidget::MyWidget( QWidget* parent ) : QWidget( parent )
 
     connect( shoot, SIGNAL( clicked() ), cannonField, SLOT( shoot() ) );
 
+    connect( cannonField, SIGNAL( hit() ), cannonField, SLOT( newTarget() ) );
+
     QHBoxLayout* topLayout = new QHBoxLayout;
     topLayout->addWidget( shoot );
     topLayout->addStretch( 1 );
