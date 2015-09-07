@@ -12,11 +12,16 @@ class CannonField : public QWidget
     public:
     CannonField( QWidget* = 0 );
 
+    bool gameOver() const;
+    bool isShooting() const;
+
     public slots:
     void setAngle( int );
     void setForce( int );
     void shoot();
     void newTarget();
+    void setGameOver();
+    void restartGame();
 
     private slots:
     void moveShot();
@@ -26,6 +31,7 @@ class CannonField : public QWidget
     void missed();
     void angleChanged( int );
     void forceChanged( int );
+    void canShoot( bool );
 
     protected:
     void paintEvent( QPaintEvent* );
@@ -47,6 +53,8 @@ class CannonField : public QWidget
     float shotForce;
 
     QPoint target;
+
+    bool gameEnded;
 };
 
 #endif

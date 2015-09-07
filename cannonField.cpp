@@ -23,7 +23,20 @@ CannonField::CannonField( QWidget* parent ) : QWidget( parent )
     this->setPalette( QPalette( QColor( 250, 250, 200 ) ) );
     this->setAutoFillBackground( true );
 
+    target = QPoint( 0, 0 );
+    gameEnded = false;
+
     newTarget();
+}
+
+bool CannonField::gameOver() const
+{
+    return gameEnded;
+}
+
+bool CannonField::isShooting() const
+{
+    return autoShootTimer->isActive();
 }
 
 void CannonField::setAngle( int angle )
@@ -50,13 +63,15 @@ void CannonField::setForce( int force )
 
 void CannonField::shoot()
 {
-    if ( autoShootTimer->isActive() ) return;
+    if ( isShooting() ) return;
 
     timerCount = 0;
     shotAngle = currentAngle;
     shotForce = currentForce;
 
     autoShootTimer->start( 5 );
+
+    emit canShoot( false );
 }
 
 void CannonField::newTarget()
@@ -73,6 +88,23 @@ void CannonField::newTarget()
     update();
 }
 
+void CannonField::setGameOver()
+{
+    if ( gameEnded ) return;
+
+    if ( isShooting() ) autoShootTimer->stop();
+    gameEnded = true;
+    update();
+}
+
+void CannonField::restartGame()
+{
+    if ( isShooting() ) autoShootTimer->stop();
+    gameEnded = false;
+    update();
+    emit canShoot( true );
+}
+
 void CannonField::moveShot()
 {
     QRegion oldRegion = shotRect();
@@ -82,9 +114,11 @@ void CannonField::moveShot()
     if ( newRegion.intersects( targetRect() ) ) {
         autoShootTimer->stop();
         emit hit();
+        emit canShoot( true );
     } else if ( newRegion.x() > this->width() or newRegion.y() > this->height() ) {
         autoShootTimer->stop();
         emit missed();
+        emit canShoot( true );
     } else {
         oldRegion = oldRegion.unite( newRegion );
     }
@@ -96,9 +130,15 @@ void CannonField::paintEvent( QPaintEvent* event )
 {
     QPainter painter( this );
 
+    if ( gameEnded ) {
+        painter.setPen( Qt::black );
+        painter.setFont( QFont( "Courier", 48, QFont::Bold ) );
+        painter.drawText( this->rect(), Qt::AlignCenter, "Game Over" );
+    }
+
     paintCannon( painter );
-    if ( autoShootTimer->isActive() ) paintShot( painter );
-    paintTarget( painter );
+    if ( isShooting() ) paintShot( painter );
+    if ( not gameEnded ) paintTarget( painter );
 }
 
 const QRect barrelRect( 30, -5, 20, 10 );

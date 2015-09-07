@@ -10,6 +10,7 @@ LCDRange::LCDRange( const QString& text, QWidget* parent ) : QWidget( parent )
 {
     label = new QLabel( text );
     label->setAlignment( Qt::AlignCenter | Qt::AlignTop );
+    label->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
     QLCDNumber* lcd = new QLCDNumber( 2, this );
     lcd->setSegmentStyle( QLCDNumber::Filled );
