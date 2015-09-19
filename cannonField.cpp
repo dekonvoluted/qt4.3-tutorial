@@ -129,7 +129,7 @@ void CannonField::moveShot()
         emit missed();
         emit canShoot( true );
     } else {
-        oldRegion = oldRegion.unite( newRegion );
+        oldRegion = oldRegion.united( newRegion );
     }
 
     update( oldRegion );

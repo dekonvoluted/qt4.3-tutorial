@@ -1,24 +1,21 @@
 # Name of the project
-project( Qt4.3-Tutorial )
+project( Qt5-Tutorial )
 
 # CMake requirement
-cmake_minimum_required( VERSION 3.3 )
+cmake_minimum_required( VERSION 3.3 FATAL_ERROR )
 
 # Qt requirement
-find_package( Qt4 REQUIRED )
+find_package( Qt5 COMPONENTS Widgets REQUIRED )
 
-# Qt setup
-include( ${QT_USE_FILE} )
-
-# Handle Qt macros
-qt4_wrap_cpp( headers_moc lcdRange.h cannonField.h gameBoard.h )
+set( CMAKE_AUTOMOC ON )
+set( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 # Create executable
-add_executable( qt4.3-tutorial main.cpp gameBoard.cpp lcdRange.cpp cannonField.cpp ${headers_moc} )
+add_executable( qt5-tutorial main.cpp gameBoard.cpp lcdRange.cpp cannonField.cpp )
 
 # Link libraries
-target_link_libraries( qt4.3-tutorial ${QT_LIBRARIES} )
+target_link_libraries( qt5-tutorial Qt5::Widgets )
 
 # Install
-INSTALL( PROGRAMS ${CMAKE_BINARY_DIR}/qt4.3-tutorial DESTINATION ${CMAKE_SOURCE_DIR} )
+INSTALL( PROGRAMS ${CMAKE_BINARY_DIR}/qt5-tutorial DESTINATION ${CMAKE_SOURCE_DIR} )
 
