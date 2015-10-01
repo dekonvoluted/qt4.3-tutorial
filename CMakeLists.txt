@@ -8,7 +8,6 @@ cmake_minimum_required( VERSION 3.3 FATAL_ERROR )
 find_package( Qt5 COMPONENTS Widgets REQUIRED )
 
 set( CMAKE_AUTOMOC ON )
-set( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 # Create executable
 add_executable( qt5-tutorial main.cpp gameBoard.cpp lcdRange.cpp cannonField.cpp )
